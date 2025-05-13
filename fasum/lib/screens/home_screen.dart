@@ -14,10 +14,21 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: const Text('Home'),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: Text(
+          "Fasum",
+          style: TextStyle(
+            color: Colors.green[600],
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         actions: [
+          IconButton(
+            onPressed:() {},
+            icon: const Icon(Icons.filter_list),
+            tooltip: 'Filter Kategori',
+          ),
           IconButton(
             onPressed: () {
               signOut(context);

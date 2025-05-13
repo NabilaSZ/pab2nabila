@@ -8,10 +8,11 @@ class SignUpScreen extends StatefulWidget {
   @override
   SignUpScreenState createState() => SignUpScreenState();
 }
+
 class SignUpScreenState extends State<SignUpScreen> {
+  final _fullNameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  final _fullNameController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
@@ -46,7 +47,7 @@ class SignUpScreenState extends State<SignUpScreen> {
                       return null;
                     },
                   ),
-                  const SizedBox(height: 16.0),
+                  const SizedBox(height: 32.0),
                   TextFormField(
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
@@ -55,6 +56,7 @@ class SignUpScreenState extends State<SignUpScreen> {
                       border: OutlineInputBorder(),
                       prefixIcon: Icon(Icons.email),
                     ),
+
                     validator: (value) {
                       if (value == null ||
                           value.isEmpty ||
@@ -64,11 +66,14 @@ class SignUpScreenState extends State<SignUpScreen> {
                       return null;
                     },
                   ),
+
                   const SizedBox(height: 16.0),
+
                   TextFormField(
                     controller: _passwordController,
                     decoration: InputDecoration(
                       labelText: 'Password',
+
                       border: const OutlineInputBorder(),
                       prefixIcon: const Icon(Icons.lock),
                       suffixIcon: IconButton(
@@ -77,6 +82,7 @@ class SignUpScreenState extends State<SignUpScreen> {
                               ? Icons.visibility
                               : Icons.visibility_off,
                         ),
+
                         onPressed: () {
                           setState(() {
                             _isPasswordVisible = !_isPasswordVisible;
@@ -84,18 +90,24 @@ class SignUpScreenState extends State<SignUpScreen> {
                         },
                       ),
                     ),
+
                     obscureText: !_isPasswordVisible,
+
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Please enter a password';
                       }
+
                       if (value.length < 6) {
                         return 'Password must be at least 6 characters';
                       }
+
                       return null;
                     },
                   ),
+
                   const SizedBox(height: 16.0),
+
                   TextFormField(
                     controller: _confirmPasswordController,
                     decoration: InputDecoration(
@@ -108,6 +120,7 @@ class SignUpScreenState extends State<SignUpScreen> {
                               ? Icons.visibility
                               : Icons.visibility_off,
                         ),
+
                         onPressed: () {
                           setState(() {
                             _isConfirmPasswordVisible =
@@ -116,18 +129,24 @@ class SignUpScreenState extends State<SignUpScreen> {
                         },
                       ),
                     ),
+
                     obscureText: !_isConfirmPasswordVisible,
+
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Please confirm your password';
                       }
+
                       if (value != _passwordController.text) {
                         return 'Passwords do not match';
                       }
+
                       return null;
                     },
                   ),
+
                   const SizedBox(height: 16.0),
+
                   _isLoading
                       ? const CircularProgressIndicator()
                       : ElevatedButton(
@@ -142,6 +161,7 @@ class SignUpScreenState extends State<SignUpScreen> {
       ),
     );
   }
+
   void _signUp() async {
     if (!_formKey.currentState!.validate()) {
       return;
@@ -150,14 +170,12 @@ class SignUpScreenState extends State<SignUpScreen> {
     final password = _passwordController.text;
     setState(() => _isLoading = true);
     try {
-      final userCredential = await
-      FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-      await
-      FirebaseFirestore.instance.collection('users').doc(userCredential.user!.uid).
-      set({
+      final UserCredential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password);
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(UserCredential.user!.uid)
+          .set({
         'fullName': _fullNameController.text.trim(),
         'email': email,
         'createdAt': Timestamp.now(),
@@ -175,16 +193,19 @@ class SignUpScreenState extends State<SignUpScreen> {
       setState(() => _isLoading = false);
     }
   }
+
   void _showErrorMessage(String message) {
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(SnackBar(content: Text(message)));
   }
+
   bool _isValidEmail(String email) {
     String emailRegex =
-        r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zAZ0-9-]+)*$";
+        r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$";
     return RegExp(emailRegex).hasMatch(email);
   }
+
   String _getAuthErrorMessage(String code) {
     switch (code) {
       case 'weak-password':
@@ -197,6 +218,7 @@ class SignUpScreenState extends State<SignUpScreen> {
         return 'An error occurred. Please try again.';
     }
   }
+
   @override
   void dispose() {
     _fullNameController.dispose();
