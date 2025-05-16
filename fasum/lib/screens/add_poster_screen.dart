@@ -123,7 +123,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
     try {
       final model = GenerativeModel(
         model: 'gemini-1.5-pro',
-        apiKey: 'AIzaSyBGTO6OgcoINlc4B-aQD3R_-QLtptjhtRE',
+        apiKey: 'AIzaSyDg-EjkxeftdOIIiMySR0hhxYkDMJsS2ns',
       );
       final imageBytes = await _image!.readAsBytes();
       final content = Content.multi([
